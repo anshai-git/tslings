@@ -1,0 +1,40 @@
+{
+    "sections": [
+    {
+        "title": "intro",
+        "path": "exercises/intro",
+        "exercises": [
+            {
+                "name": "intro_1.ts",
+                "hint": "hint for intro 1"
+            },
+            {
+                "name": "intro_2.ts",
+                "hint": "hint for intro 2"
+            },
+            {
+                "name": "intro_3.ts",
+                "hint": "hint for intro 3"
+            }
+        ]
+    }, 
+    {
+        "title": "data types",
+        "path": "exercises/data_types",
+        "exercises": [
+            {
+                "name": "data_types_1.ts",
+                "hint": "hint for data types 1"
+            },
+            {
+                "name": "data_types_2.ts",
+                "hint": "hint for data types 2"
+            },
+            {
+                "name": "data_types_3.ts",
+                "hint": "hint for data types 3"
+            }
+        ]
+    } 
+]
+}
