@@ -1,30 +1,49 @@
-"use strict";
-exports.__esModule = true;
-var fs = require("fs");
-var util = require("node:util");
-var readline = require("readline");
-var url_1 = require("url");
-var path_1 = require("path");
-var __filename = (0, url_1.fileURLToPath)(import.meta.url);
-var __dirname = (0, path_1.dirname)(__filename);
+import * as fs from 'fs';
+import * as util from 'node:util';
+import * as readline from 'readline';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import { z as Z } from 'zod';
+import { none, some } from 'fp-ts/es6/Option';
+var __filename = fileURLToPath(import.meta.url);
+var __dirname = dirname(__filename);
 var INCOMPLETE_INDICATOR = '// I AM NOT DONE';
 var user_input_reader = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
 var read_file = util.promisify(fs.readFile);
+// Zod schemas
+var exercise_validator = Z.object({
+    name: Z.string(),
+    hint: Z.string()
+});
+var section_validator = Z.object({
+    title: Z.string(),
+    path: Z.string()
+});
+var parse = function (validator, data, result_type) {
+    var result = validator.parse(data);
+    return result.success ? some(new result_type(result)) : none;
+};
 // Models
+var BaseModel = /** @class */ (function () {
+    function BaseModel(config) {
+    }
+    return BaseModel;
+}());
 var Exercise = /** @class */ (function () {
-    function Exercise(exercise_data, section_path) {
-        console.log(exercise_data);
-        this.path = "".concat(__dirname, "/").concat(section_path, "/").concat(exercise_data === null || exercise_data === void 0 ? void 0 : exercise_data.name);
+    function Exercise(config) {
+        var _a;
+        console.log(config.exercise_data);
+        this.path = "".concat(__dirname, "/").concat(config.section_path, "/").concat((_a = config.exercise_data) === null || _a === void 0 ? void 0 : _a.name);
     }
     return Exercise;
 }());
 var Section = /** @class */ (function () {
     function Section(section_data) {
         this.title = section_data === null || section_data === void 0 ? void 0 : section_data.title;
-        this.exercises = section_data === null || section_data === void 0 ? void 0 : section_data.exercises.map(function (e) { return new Exercise(e, section_data === null || section_data === void 0 ? void 0 : section_data.path); });
+        this.exercises = section_data === null || section_data === void 0 ? void 0 : section_data.exercises.map(function (e) { return new Exercise({ exercise_data: e, section_path: section_data === null || section_data === void 0 ? void 0 : section_data.path }); });
     }
     return Section;
 }());

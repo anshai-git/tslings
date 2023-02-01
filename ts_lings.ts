@@ -3,6 +3,8 @@ import * as util from 'node:util';
 import * as readline from 'readline';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { z as Z, ZodSchema } from 'zod';
+import { none, Option, some } from 'fp-ts/es6/Option';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -16,13 +18,33 @@ const user_input_reader = readline.createInterface({
 
 const read_file = util.promisify(fs.readFile);
 
+// Zod schemas
+const exercise_validator = Z.object({
+    name: Z.string(),
+    hint: Z.string()
+});
+
+const section_validator = Z.object({
+    title: Z.string(),
+    path: Z.string()
+})
+
+const parse = <T extends BaseModel>(validator: ZodSchema, data: any, result_type: new (config: any) => T): Option<T> => {
+    const result = validator.parse(data);
+    return result.success ? some(new result_type(result)) : none;
+}
+
 // Models
-class Exercise {
+abstract class BaseModel {
+    protected constructor(config: any) { }
+}
+
+class Exercise implements BaseModel {
     public path: string;
 
-    constructor(exercise_data: any, section_path: string) {
-        console.log(exercise_data);
-        this.path = `${__dirname}/${section_path}/${exercise_data?.name}`;
+    constructor(config: { exercise_data: any, section_path: string }) {
+        console.log(config.exercise_data);
+        this.path = `${__dirname}/${config.section_path}/${config.exercise_data?.name}`;
     }
 }
 
@@ -31,10 +53,10 @@ class Section {
     public exercises: Array<Exercise>;
 
     constructor(
-        section_data: any 
+        section_data: any
     ) {
         this.title = section_data?.title;
-        this.exercises = section_data?.exercises.map((e: any) => new Exercise(e, section_data?.path));
+        this.exercises = section_data?.exercises.map((e: any) => new Exercise({ exercise_data: e, section_path: section_data?.path }));
     }
 }
 

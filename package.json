@@ -1,6 +1,7 @@
 {
   "name": "tsliings",
-  "tpye": "module",
+  "type": "module",
+  "moduleResolution": "node",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,5 +9,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "fp-ts": "^2.13.1",
+    "zod": "^3.20.2"
+  }
 }
