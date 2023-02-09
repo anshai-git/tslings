@@ -2,12 +2,9 @@ import * as fs from 'fs';
 import * as util from 'node:util';
 import * as readline from 'readline';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 import { z as Z, ZodSchema } from 'zod';
-import { none, Option, some } from 'fp-ts/es6/Option';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import * as O from 'fp-ts/lib/Option';
+import path from 'path';
 
 const INCOMPLETE_INDICATOR = '// I AM NOT DONE';
 
@@ -29,9 +26,9 @@ const section_validator = Z.object({
     path: Z.string()
 })
 
-const parse = <T extends BaseModel>(validator: ZodSchema, data: any, result_type: new (config: any) => T): Option<T> => {
+const parse = <T extends BaseModel>(validator: ZodSchema, data: any, result_type: new (config: any) => T): O.Option<T> => {
     const result = validator.parse(data);
-    return result.success ? some(new result_type(result)) : none;
+    return result.success ? O.some(new result_type(result)) : O.none;
 }
 
 // Models
@@ -44,7 +41,7 @@ class Exercise implements BaseModel {
 
     constructor(config: { exercise_data: any, section_path: string }) {
         console.log(config.exercise_data);
-        this.path = `${__dirname}/${config.section_path}/${config.exercise_data?.name}`;
+        this.path = `${path.resolve(__dirname)}/${config.section_path}/${config.exercise_data?.name}`;
     }
 }
 

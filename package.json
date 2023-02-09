@@ -1,6 +1,5 @@
 {
   "name": "tsliings",
-  "type": "module",
   "moduleResolution": "node",
   "version": "1.0.0",
   "description": "",
@@ -11,7 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/node": "^18.13.0",
     "fp-ts": "^2.13.1",
+    "typescript": "^4.9.5",
     "zod": "^3.20.2"
   }
 }
